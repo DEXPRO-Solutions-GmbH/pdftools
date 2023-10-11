@@ -54,7 +54,7 @@ public class FixPDFCommand implements Callable<Integer> {
             PDPageTree tree = pdf.getPages();
 
             for (PDPage page : tree) {
-                if (page.getMediaBox().getWidth() > MAX_WIDTH || page.getMediaBox().getHeight() > MAX_HEIGHT) {
+                if (shouldPageBeRescaled(page)) {
                     float fWidth = MAX_WIDTH / page.getMediaBox().getWidth();
                     float fHeight = MAX_HEIGHT / page.getMediaBox().getHeight();
 
@@ -70,5 +70,9 @@ public class FixPDFCommand implements Callable<Integer> {
 
             pdf.save(output);
         }
+    }
+
+    public static boolean shouldPageBeRescaled(PDPage page) {
+        return page.getMediaBox().getWidth() > MAX_WIDTH || page.getMediaBox().getHeight() > MAX_HEIGHT;
     }
 }
