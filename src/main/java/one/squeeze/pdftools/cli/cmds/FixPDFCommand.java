@@ -50,7 +50,6 @@ public class FixPDFCommand implements Callable<Integer> {
 
     private static void fix(File input, File output) throws IOException {
         try (PDDocument pdf = Loader.loadPDF(input)) {
-            PrinterJob job = PrinterJob.getPrinterJob();
             PDPageTree tree = pdf.getPages();
 
             for (PDPage page : tree) {
