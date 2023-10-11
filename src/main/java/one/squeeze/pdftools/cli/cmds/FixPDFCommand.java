@@ -1,16 +1,16 @@
 package one.squeeze.pdftools.cli.cmds;
 
 
+import one.squeeze.pdftools.app.scale.IScaler;
+import one.squeeze.pdftools.app.scale.NoopScaler;
+import one.squeeze.pdftools.app.scale.Scaler;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.PDPageTree;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.apache.pdfbox.util.Matrix;
 import picocli.CommandLine;
 
-import java.awt.print.PrinterJob;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -50,25 +50,44 @@ public class FixPDFCommand implements Callable<Integer> {
 
     private static void fix(File input, File output) throws IOException {
         try (PDDocument pdf = Loader.loadPDF(input)) {
-            PrinterJob job = PrinterJob.getPrinterJob();
             PDPageTree tree = pdf.getPages();
 
             for (PDPage page : tree) {
-                if (page.getMediaBox().getWidth() > MAX_WIDTH || page.getMediaBox().getHeight() > MAX_HEIGHT) {
-                    float fWidth = MAX_WIDTH / page.getMediaBox().getWidth();
-                    float fHeight = MAX_HEIGHT / page.getMediaBox().getHeight();
-
-                    float factor = Math.min(fWidth, fHeight);
-
-                    PDPageContentStream contentStream = new PDPageContentStream(pdf, page, PDPageContentStream.AppendMode.PREPEND, false);
-                    contentStream.transform(Matrix.getScaleInstance(factor, factor));
-                    contentStream.close();
-
-                    page.setMediaBox(PDRectangle.A4);
-                }
+                IScaler scaler = buildScaler(page);
+                scaler.scale(pdf, page);
             }
 
             pdf.save(output);
         }
+    }
+
+    public static IScaler buildScaler(PDPage page) {
+        PDRectangle mediaBox = page.getMediaBox();
+        boolean isPortrait = mediaBox.getWidth() < mediaBox.getHeight();
+        boolean shouldScale = false;
+
+        if (isPortrait) {
+            shouldScale = mediaBox.getWidth() > MAX_WIDTH || mediaBox.getHeight() > MAX_HEIGHT;
+        } else {
+            shouldScale = mediaBox.getWidth() > MAX_HEIGHT || mediaBox.getHeight() > MAX_WIDTH;
+        }
+        if (!shouldScale) {
+            return new NoopScaler();
+        }
+
+        // Calculate scale factors. Depending on the orientation this requires division of height or width.
+        float fWidth = 1;
+        float fHeight = 1;
+        if (isPortrait) {
+            fWidth = MAX_WIDTH / page.getMediaBox().getWidth();
+            fHeight = MAX_HEIGHT / page.getMediaBox().getHeight();
+        } else {
+            fWidth = MAX_HEIGHT / page.getMediaBox().getWidth();
+            fHeight = MAX_WIDTH / page.getMediaBox().getHeight();
+        }
+
+        float factor = Math.min(fWidth, fHeight);
+
+        return new Scaler(factor, PDRectangle.A4);
     }
 }
