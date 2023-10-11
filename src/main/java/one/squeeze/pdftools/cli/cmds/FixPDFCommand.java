@@ -75,9 +75,17 @@ public class FixPDFCommand implements Callable<Integer> {
             return new NoopScaler();
         }
 
-        // TODO: Take into account if portrait or landscape
-        float fWidth = MAX_WIDTH / page.getMediaBox().getWidth();
-        float fHeight = MAX_HEIGHT / page.getMediaBox().getHeight();
+        // Calculate scale factors. Depending on the orientation this requires division of height or width.
+        float fWidth = 1;
+        float fHeight = 1;
+        if (isPortrait) {
+            fWidth = MAX_WIDTH / page.getMediaBox().getWidth();
+            fHeight = MAX_HEIGHT / page.getMediaBox().getHeight();
+        } else {
+            fWidth = MAX_HEIGHT / page.getMediaBox().getWidth();
+            fHeight = MAX_WIDTH / page.getMediaBox().getHeight();
+        }
+
         float factor = Math.min(fWidth, fHeight);
 
         return new Scaler(factor, PDRectangle.A4);
