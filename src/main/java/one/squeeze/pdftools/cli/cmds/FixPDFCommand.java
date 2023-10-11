@@ -55,10 +55,7 @@ public class FixPDFCommand implements Callable<Integer> {
 
             for (PDPage page : tree) {
                 if (shouldPageBeRescaled(page)) {
-                    float fWidth = MAX_WIDTH / page.getMediaBox().getWidth();
-                    float fHeight = MAX_HEIGHT / page.getMediaBox().getHeight();
-
-                    float factor = Math.min(fWidth, fHeight);
+                    float factor = calculateScaleFactor(page);
 
                     PDPageContentStream contentStream = new PDPageContentStream(pdf, page, PDPageContentStream.AppendMode.PREPEND, false);
                     contentStream.transform(Matrix.getScaleInstance(factor, factor));
@@ -70,6 +67,13 @@ public class FixPDFCommand implements Callable<Integer> {
 
             pdf.save(output);
         }
+    }
+
+    public static float calculateScaleFactor(PDPage page) {
+        float fWidth = MAX_WIDTH / page.getMediaBox().getWidth();
+        float fHeight = MAX_HEIGHT / page.getMediaBox().getHeight();
+
+        return Math.min(fWidth, fHeight);
     }
 
     public static boolean shouldPageBeRescaled(PDPage page) {
