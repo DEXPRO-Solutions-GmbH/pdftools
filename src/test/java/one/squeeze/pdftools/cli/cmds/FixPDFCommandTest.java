@@ -2,7 +2,6 @@ package one.squeeze.pdftools.cli.cmds;
 
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -20,7 +19,6 @@ class FixPDFCommandTest {
     }
 
     @Test
-    @Disabled("Currently a bug forces scaling on landscape A4")
     void testShouldPageBeRescaled_FalseOnA4Landscape() {
         PDPage page = new PDPage();
         PDRectangle box = new PDRectangle();

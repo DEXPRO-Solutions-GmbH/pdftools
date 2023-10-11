@@ -76,6 +76,13 @@ public class FixPDFCommand implements Callable<Integer> {
     }
 
     public static boolean shouldPageBeRescaled(PDPage page) {
-        return page.getMediaBox().getWidth() > MAX_WIDTH || page.getMediaBox().getHeight() > MAX_HEIGHT;
+        PDRectangle mediaBox = page.getMediaBox();
+        boolean isPortrait = mediaBox.getWidth() < mediaBox.getHeight();
+
+        if (isPortrait) {
+            return mediaBox.getWidth() > MAX_WIDTH || mediaBox.getHeight() > MAX_HEIGHT;
+        } else {
+            return mediaBox.getWidth() > MAX_HEIGHT || mediaBox.getHeight() > MAX_WIDTH;
+        }
     }
 }
