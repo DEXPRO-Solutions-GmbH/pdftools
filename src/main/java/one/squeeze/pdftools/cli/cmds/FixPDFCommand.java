@@ -79,11 +79,11 @@ public class FixPDFCommand implements Callable<Integer> {
         float fWidth = 1;
         float fHeight = 1;
         if (isPortrait) {
-            fWidth = MAX_WIDTH / page.getMediaBox().getWidth();
-            fHeight = MAX_HEIGHT / page.getMediaBox().getHeight();
+            fWidth = MAX_WIDTH / mediaBox.getWidth();
+            fHeight = MAX_HEIGHT / mediaBox.getHeight();
         } else {
-            fWidth = MAX_HEIGHT / page.getMediaBox().getWidth();
-            fHeight = MAX_WIDTH / page.getMediaBox().getHeight();
+            fWidth = MAX_HEIGHT / mediaBox.getWidth();
+            fHeight = MAX_WIDTH / mediaBox.getHeight();
         }
 
         float factor = Math.min(fWidth, fHeight);
