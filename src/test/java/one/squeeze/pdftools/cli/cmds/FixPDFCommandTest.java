@@ -25,9 +25,7 @@ class FixPDFCommandTest {
     void testBuildScaler_NoopOnA4Portrait() {
         PDPage page = new PDPage();
         PDRectangle box = new PDRectangle();
-        box.setUpperRightX(595);
-        box.setUpperRightY(841);
-        page.setMediaBox(box);
+        page.setMediaBox(DIN.A4);
 
         IScaler scaler = FixPDFCommand.buildScaler(page);
         assertTrue(scaler instanceof NoopScaler);
@@ -37,9 +35,7 @@ class FixPDFCommandTest {
     void testBuildScaler_NoopOnA4Landscape() {
         PDPage page = new PDPage();
         PDRectangle box = new PDRectangle();
-        box.setUpperRightX(841);
-        box.setUpperRightY(595);
-        page.setMediaBox(box);
+        page.setMediaBox(DIN.A4_Landscape);
 
         IScaler scaler = FixPDFCommand.buildScaler(page);
         assertTrue(scaler instanceof NoopScaler);
@@ -49,8 +45,8 @@ class FixPDFCommandTest {
     void testBuildScaler_NoopOnSmallerThanA4Portrait() {
         PDPage page = new PDPage();
         PDRectangle box = new PDRectangle();
-        box.setUpperRightX((float) 595 / 2);
-        box.setUpperRightY((float) 841 / 2);
+        box.setUpperRightX(DIN.A4.getWidth() - 1);
+        box.setUpperRightY(DIN.A4.getHeight() - 1);
         page.setMediaBox(box);
 
         IScaler scaler = FixPDFCommand.buildScaler(page);
@@ -61,8 +57,8 @@ class FixPDFCommandTest {
     void testBuildScaler_NoopOnSmallerThanA4Landscape() {
         PDPage page = new PDPage();
         PDRectangle box = new PDRectangle();
-        box.setUpperRightX((float) 841 / 2);
-        box.setUpperRightY((float) 595 / 2);
+        box.setUpperRightX(DIN.A4_Landscape.getWidth() - 1);
+        box.setUpperRightY(DIN.A4_Landscape.getHeight() - 1);
         page.setMediaBox(box);
 
         IScaler scaler = FixPDFCommand.buildScaler(page);
@@ -73,8 +69,8 @@ class FixPDFCommandTest {
     void testBuildScaler_ScalesLargePortrait() {
         PDPage page = new PDPage();
         PDRectangle box = new PDRectangle();
-        box.setUpperRightX(595 * 10);
-        box.setUpperRightY(841 * 10);
+        box.setUpperRightX(DIN.A4.getWidth() * 10);
+        box.setUpperRightY(DIN.A4.getHeight() * 10);
         page.setMediaBox(box);
 
         Scaler scaler = (Scaler) FixPDFCommand.buildScaler(page);
@@ -86,8 +82,8 @@ class FixPDFCommandTest {
     void testBuildScaler_ScalesLargeLandscape() {
         PDPage page = new PDPage();
         PDRectangle box = new PDRectangle();
-        box.setUpperRightX(841 * 10);
-        box.setUpperRightY(595 * 10);
+        box.setUpperRightX(DIN.A4_Landscape.getWidth() * 10);
+        box.setUpperRightY(DIN.A4_Landscape.getHeight() * 10);
         page.setMediaBox(box);
 
         Scaler scaler = (Scaler) FixPDFCommand.buildScaler(page);
