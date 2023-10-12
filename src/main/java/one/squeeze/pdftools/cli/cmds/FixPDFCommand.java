@@ -1,6 +1,7 @@
 package one.squeeze.pdftools.cli.cmds;
 
 
+import one.squeeze.pdftools.DIN;
 import one.squeeze.pdftools.app.scale.IScaler;
 import one.squeeze.pdftools.app.scale.NoopScaler;
 import one.squeeze.pdftools.app.scale.Scaler;
@@ -79,15 +80,23 @@ public class FixPDFCommand implements Callable<Integer> {
         float fWidth = 1;
         float fHeight = 1;
         if (isPortrait) {
-            fWidth = MAX_WIDTH / page.getMediaBox().getWidth();
-            fHeight = MAX_HEIGHT / page.getMediaBox().getHeight();
+            fWidth = MAX_WIDTH / mediaBox.getWidth();
+            fHeight = MAX_HEIGHT / mediaBox.getHeight();
         } else {
-            fWidth = MAX_HEIGHT / page.getMediaBox().getWidth();
-            fHeight = MAX_WIDTH / page.getMediaBox().getHeight();
+            fWidth = MAX_HEIGHT / mediaBox.getWidth();
+            fHeight = MAX_WIDTH / mediaBox.getHeight();
         }
 
         float factor = Math.min(fWidth, fHeight);
 
-        return new Scaler(factor, PDRectangle.A4);
+        // Determine new media box
+        PDRectangle targetMediaBox;
+        if (isPortrait) {
+            targetMediaBox = DIN.A4;
+        } else {
+            targetMediaBox = DIN.A4_Landscape;
+        }
+
+        return new Scaler(factor, targetMediaBox);
     }
 }

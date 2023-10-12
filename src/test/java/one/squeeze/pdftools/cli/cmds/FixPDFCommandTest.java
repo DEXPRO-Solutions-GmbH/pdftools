@@ -1,5 +1,6 @@
 package one.squeeze.pdftools.cli.cmds;
 
+import one.squeeze.pdftools.DIN;
 import one.squeeze.pdftools.app.scale.IScaler;
 import one.squeeze.pdftools.app.scale.NoopScaler;
 import one.squeeze.pdftools.app.scale.Scaler;
@@ -7,7 +8,8 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class FixPDFCommandTest {
 
@@ -77,7 +79,7 @@ class FixPDFCommandTest {
 
         Scaler scaler = (Scaler) FixPDFCommand.buildScaler(page);
         assertEquals(TEN_PERCENT, scaler.getFactor());
-        assertEquals(PDRectangle.A4, scaler.getTargetMediaBox());
+        assertEquals(DIN.A4, scaler.getTargetMediaBox());
     }
 
     @Test
@@ -90,6 +92,6 @@ class FixPDFCommandTest {
 
         Scaler scaler = (Scaler) FixPDFCommand.buildScaler(page);
         assertEquals(TEN_PERCENT, scaler.getFactor());
-        assertEquals(PDRectangle.A4, scaler.getTargetMediaBox());
+        assertEquals(DIN.A4_Landscape, scaler.getTargetMediaBox());
     }
 }
