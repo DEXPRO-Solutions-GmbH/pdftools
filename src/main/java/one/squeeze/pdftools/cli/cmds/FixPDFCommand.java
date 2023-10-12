@@ -25,8 +25,8 @@ import java.util.concurrent.Callable;
         description = "Scales large pages scaled down to A4.")
 public class FixPDFCommand implements Callable<Integer> {
 
-    public static final int MAX_WIDTH = 595;
-    public static final int MAX_HEIGHT = 841;
+    public static final float MAX_WIDTH = DIN.A4.getWidth();
+    public static final float MAX_HEIGHT = DIN.A4.getHeight();
 
     @CommandLine.Parameters(index = "0", description = "The input PDF to fix")
     private File inputFile;
