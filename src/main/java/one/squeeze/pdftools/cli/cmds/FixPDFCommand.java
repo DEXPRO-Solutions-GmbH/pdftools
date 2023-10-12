@@ -1,6 +1,7 @@
 package one.squeeze.pdftools.cli.cmds;
 
 
+import one.squeeze.pdftools.DIN;
 import one.squeeze.pdftools.app.scale.IScaler;
 import one.squeeze.pdftools.app.scale.NoopScaler;
 import one.squeeze.pdftools.app.scale.Scaler;
@@ -88,6 +89,14 @@ public class FixPDFCommand implements Callable<Integer> {
 
         float factor = Math.min(fWidth, fHeight);
 
-        return new Scaler(factor, PDRectangle.A4);
+        // Determine new media box
+        PDRectangle targetMediaBox;
+        if (isPortrait) {
+            targetMediaBox = DIN.A4;
+        } else {
+            targetMediaBox = DIN.A4_Landscape;
+        }
+
+        return new Scaler(factor, targetMediaBox);
     }
 }
