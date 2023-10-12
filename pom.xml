@@ -6,7 +6,7 @@
 
     <groupId>one.squeeze</groupId>
     <artifactId>pdftools</artifactId>
-    <version>0.1.1</version>
+    <version>0.1.2</version>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
