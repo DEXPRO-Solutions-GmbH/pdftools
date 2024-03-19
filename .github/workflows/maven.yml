@@ -9,6 +9,12 @@ on:
   pull_request:
     branches: [ "main" ]
 
+permissions:
+  checks: write
+  contents: write
+  security-events: write
+  statuses: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
