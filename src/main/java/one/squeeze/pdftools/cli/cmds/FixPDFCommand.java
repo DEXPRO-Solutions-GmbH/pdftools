@@ -25,8 +25,10 @@ import java.util.concurrent.Callable;
         description = "Scales large pages scaled down to A4.")
 public class FixPDFCommand implements Callable<Integer> {
 
-    public static final float MAX_WIDTH = DIN.A4.getWidth();
-    public static final float MAX_HEIGHT = DIN.A4.getHeight();
+    public static final PDRectangle TARGET_MEDIA_BOX = DIN.A4;
+    public static final PDRectangle TARGET_MEDIA_BOX_LANDSCAPE = DIN.A4_Landscape;
+    public static final float MAX_WIDTH = TARGET_MEDIA_BOX.getWidth();
+    public static final float MAX_HEIGHT = TARGET_MEDIA_BOX.getHeight();
 
     @CommandLine.Parameters(index = "0", description = "The input PDF to fix")
     private File inputFile;
@@ -92,9 +94,9 @@ public class FixPDFCommand implements Callable<Integer> {
         // Determine new media box
         PDRectangle targetMediaBox;
         if (isPortrait) {
-            targetMediaBox = DIN.A4;
+            targetMediaBox = TARGET_MEDIA_BOX;
         } else {
-            targetMediaBox = DIN.A4_Landscape;
+            targetMediaBox = TARGET_MEDIA_BOX_LANDSCAPE;
         }
 
         return new Scaler(factor, targetMediaBox);
