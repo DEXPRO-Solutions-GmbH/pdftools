@@ -1,15 +1,14 @@
 package one.squeeze.pdftools.cli.cmds;
 
 import one.squeeze.pdftools.DIN;
-import one.squeeze.pdftools.app.scale.IScaler;
-import one.squeeze.pdftools.app.scale.NoopScaler;
+import one.squeeze.pdftools.US;
 import one.squeeze.pdftools.app.scale.Scaler;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class FixPDFCommandTest {
 
@@ -22,23 +21,35 @@ class FixPDFCommandTest {
     public static final double TEN_PERCENT = 0.10000000149011612;
 
     @Test
+    void testBuildScaler_NoopOnUsLetterPortrait() {
+        PDPage page = new PDPage();
+        page.setMediaBox(US.LETTER);
+
+        assertFalse(FixPDFCommand.shouldScale(page));
+    }
+
+    @Test
+    void testBuildScaler_NoopOnUsLetterLandscape() {
+        PDPage page = new PDPage();
+        page.setMediaBox(US.LETTER_LANDSACPE);
+
+        assertFalse(FixPDFCommand.shouldScale(page));
+    }
+
+    @Test
     void testBuildScaler_NoopOnA4Portrait() {
         PDPage page = new PDPage();
-        PDRectangle box = new PDRectangle();
         page.setMediaBox(DIN.A4);
 
-        IScaler scaler = FixPDFCommand.buildScaler(page);
-        assertTrue(scaler instanceof NoopScaler);
+        assertFalse(FixPDFCommand.shouldScale(page));
     }
 
     @Test
     void testBuildScaler_NoopOnA4Landscape() {
         PDPage page = new PDPage();
-        PDRectangle box = new PDRectangle();
         page.setMediaBox(DIN.A4_Landscape);
 
-        IScaler scaler = FixPDFCommand.buildScaler(page);
-        assertTrue(scaler instanceof NoopScaler);
+        assertFalse(FixPDFCommand.shouldScale(page));
     }
 
     @Test
@@ -49,8 +60,7 @@ class FixPDFCommandTest {
         box.setUpperRightY(DIN.A4.getHeight() - 1);
         page.setMediaBox(box);
 
-        IScaler scaler = FixPDFCommand.buildScaler(page);
-        assertTrue(scaler instanceof NoopScaler);
+        assertFalse(FixPDFCommand.shouldScale(page));
     }
 
     @Test
@@ -61,8 +71,7 @@ class FixPDFCommandTest {
         box.setUpperRightY(DIN.A4_Landscape.getHeight() - 1);
         page.setMediaBox(box);
 
-        IScaler scaler = FixPDFCommand.buildScaler(page);
-        assertTrue(scaler instanceof NoopScaler);
+        assertFalse(FixPDFCommand.shouldScale(page));
     }
 
     @Test
