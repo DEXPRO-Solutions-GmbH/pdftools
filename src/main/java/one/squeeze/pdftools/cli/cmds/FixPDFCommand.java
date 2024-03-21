@@ -29,6 +29,7 @@ public class FixPDFCommand implements Callable<Integer> {
     public static final PDRectangle TARGET_MEDIA_BOX_LANDSCAPE = DIN.A4_Landscape;
     public static final float MAX_WIDTH = TARGET_MEDIA_BOX.getWidth();
     public static final float MAX_HEIGHT = TARGET_MEDIA_BOX.getHeight();
+    public static final float MAX_AREA = MAX_WIDTH * MAX_HEIGHT;
 
     @CommandLine.Parameters(index = "0", description = "The input PDF to fix")
     private File inputFile;
@@ -66,13 +67,13 @@ public class FixPDFCommand implements Callable<Integer> {
 
     public static boolean shouldScale(PDPage page) {
         PDRectangle mediaBox = page.getMediaBox();
-        boolean isPortrait = mediaBox.getWidth() < mediaBox.getHeight();
 
-        if (isPortrait) {
-            return mediaBox.getWidth() > MAX_WIDTH || mediaBox.getHeight() > MAX_HEIGHT;
-        } else {
-            return mediaBox.getWidth() > MAX_HEIGHT || mediaBox.getHeight() > MAX_WIDTH;
-        }
+        // Pages may be landscape, portrait or other weired aspect rations.
+        // The general concern for us is that the area should not be too large, no matter
+        // what aspect ratio. Thus, we limit the area.
+
+        float area = mediaBox.getWidth() * mediaBox.getHeight();
+        return area > MAX_AREA;
     }
 
     public static IScaler buildScaler(PDPage page) {
