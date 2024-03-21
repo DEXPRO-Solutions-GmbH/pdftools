@@ -64,19 +64,25 @@ public class FixPDFCommand implements Callable<Integer> {
         }
     }
 
-    public static IScaler buildScaler(PDPage page) {
+    public static boolean shouldScale(PDPage page) {
         PDRectangle mediaBox = page.getMediaBox();
         boolean isPortrait = mediaBox.getWidth() < mediaBox.getHeight();
-        boolean shouldScale = false;
 
         if (isPortrait) {
-            shouldScale = mediaBox.getWidth() > MAX_WIDTH || mediaBox.getHeight() > MAX_HEIGHT;
+            return mediaBox.getWidth() > MAX_WIDTH || mediaBox.getHeight() > MAX_HEIGHT;
         } else {
-            shouldScale = mediaBox.getWidth() > MAX_HEIGHT || mediaBox.getHeight() > MAX_WIDTH;
+            return mediaBox.getWidth() > MAX_HEIGHT || mediaBox.getHeight() > MAX_WIDTH;
         }
+    }
+
+    public static IScaler buildScaler(PDPage page) {
+        boolean shouldScale = shouldScale(page);
         if (!shouldScale) {
             return new NoopScaler();
         }
+
+        PDRectangle mediaBox = page.getMediaBox();
+        boolean isPortrait = mediaBox.getWidth() < mediaBox.getHeight();
 
         // Calculate scale factors. Depending on the orientation this requires division of height or width.
         float fWidth = 1;
