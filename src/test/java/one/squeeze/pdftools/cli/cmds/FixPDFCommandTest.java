@@ -1,6 +1,7 @@
 package one.squeeze.pdftools.cli.cmds;
 
 import one.squeeze.pdftools.DIN;
+import one.squeeze.pdftools.US;
 import one.squeeze.pdftools.app.scale.Scaler;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
@@ -18,6 +19,22 @@ class FixPDFCommandTest {
      * Either way, this currently works fine.
      */
     public static final double TEN_PERCENT = 0.10000000149011612;
+
+    @Test
+    void testBuildScaler_NoopOnUsLetterPortrait() {
+        PDPage page = new PDPage();
+        page.setMediaBox(US.LETTER);
+
+        assertFalse(FixPDFCommand.shouldScale(page));
+    }
+
+    @Test
+    void testBuildScaler_NoopOnUsLetterLandscape() {
+        PDPage page = new PDPage();
+        page.setMediaBox(US.LETTER_LANDSACPE);
+
+        assertFalse(FixPDFCommand.shouldScale(page));
+    }
 
     @Test
     void testBuildScaler_NoopOnA4Portrait() {
