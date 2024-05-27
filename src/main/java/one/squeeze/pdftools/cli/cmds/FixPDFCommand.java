@@ -5,7 +5,6 @@ import one.squeeze.pdftools.DIN;
 import one.squeeze.pdftools.app.scale.IScaler;
 import one.squeeze.pdftools.app.scale.NoopScaler;
 import one.squeeze.pdftools.app.scale.Scaler;
-import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageTree;
@@ -53,7 +52,7 @@ public class FixPDFCommand implements Callable<Integer> {
     }
 
     private static void fix(File input, File output) throws IOException {
-        try (PDDocument pdf = Loader.loadPDF(input)) {
+        try (PDDocument pdf = PDDocument.load(input)) {
             PDPageTree tree = pdf.getPages();
 
             for (PDPage page : tree) {
